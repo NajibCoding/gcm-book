@@ -6,6 +6,7 @@ import { Pencil, Trash2, Plus, X, Loader2 } from 'lucide-react';
 import { Service, PageProps, PaginatedData } from '@/types';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
+import CurrencyInput from '@/Components/CurrencyInput';
 
 interface Props extends PageProps {
     services: PaginatedData<Service>;
@@ -33,7 +34,7 @@ function ServiceModal({
         name: service?.name ?? '',
         slug: service?.slug ?? '',
         description: service?.description ?? '',
-        base_price: service?.base_price ?? '',
+        base_price: service?.base_price ?? 0,
         is_bookable: service?.is_bookable ?? true,
     });
 
@@ -62,14 +63,13 @@ function ServiceModal({
                     {[
                         { key: 'name', label: 'Nama', type: 'text', placeholder: 'Detailing Motor Premium' },
                         { key: 'slug', label: 'Slug', type: 'text', placeholder: 'detailing-motor' },
-                        { key: 'base_price', label: 'Harga Dasar (Rp)', type: 'number', placeholder: '50000' },
                     ].map((f) => (
                         <div key={f.key}>
                             <label className="block text-sm font-medium text-gray-700 mb-1">{f.label}</label>
                             <input
                                 type={f.type}
                                 value={(data as any)[f.key]}
-                                onChange={(e) => setData(f.key as keyof FormData, f.type === 'number' ? Number(e.target.value) : e.target.value)}
+                                onChange={(e) => setData(f.key as keyof FormData, e.target.value)}
                                 placeholder={f.placeholder}
                                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -78,6 +78,18 @@ function ServiceModal({
                             )}
                         </div>
                     ))}
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Harga Dasar</label>
+                        <CurrencyInput
+                            value={data.base_price as number}
+                            onChange={(v) => setData('base_price', v)}
+                            showPrefix
+                            placeholder="50.000"
+                            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        {errors.base_price && <p className="text-xs text-red-500 mt-1">{errors.base_price}</p>}
+                    </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>

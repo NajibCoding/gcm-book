@@ -7,6 +7,7 @@ import { Promo, PageProps, PaginatedData } from '@/types';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { useForm } from '@inertiajs/react';
+import CurrencyInput from '@/Components/CurrencyInput';
 
 interface Props extends PageProps {
     promos: PaginatedData<Promo>;
@@ -34,8 +35,8 @@ function PromoModal({ promo, onClose }: { promo: Promo | null; onClose: () => vo
         code: promo?.code ?? '',
         description: promo?.description ?? '',
         discount_type: promo?.discount_type ?? 'percent',
-        discount_value: promo?.discount_value ?? '',
-        min_order: promo?.min_order ?? '',
+        discount_value: promo?.discount_value ?? 0,
+        min_order: promo?.min_order ?? 0,
         max_usage: promo?.max_usage ?? '',
         valid_from: promo?.valid_from?.slice(0, 10) ?? '',
         valid_until: promo?.valid_until?.slice(0, 10) ?? '',
@@ -84,15 +85,39 @@ function PromoModal({ promo, onClose }: { promo: Promo | null; onClose: () => vo
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Nilai Diskon</label>
-                            <input type="number" value={data.discount_value} onChange={(e) => setData('discount_value', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Nilai Diskon{data.discount_type === 'fixed' ? ' (Rp)' : ' (%)'}
+                            </label>
+                            {data.discount_type === 'fixed' ? (
+                                <CurrencyInput
+                                    value={data.discount_value as number}
+                                    onChange={(v) => setData('discount_value', v)}
+                                    showPrefix
+                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                />
+                            ) : (
+                                <input
+                                    type="number"
+                                    min={0}
+                                    max={100}
+                                    value={data.discount_value}
+                                    onChange={(e) => setData('discount_value', Number(e.target.value))}
+                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                />
+                            )}
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Min. Order (Rp)</label>
-                            <input type="number" value={data.min_order} onChange={(e) => setData('min_order', e.target.value)} placeholder="0" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Min. Order</label>
+                            <CurrencyInput
+                                value={data.min_order as number}
+                                onChange={(v) => setData('min_order', v)}
+                                showPrefix
+                                placeholder="0"
+                                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Maks. Penggunaan</label>

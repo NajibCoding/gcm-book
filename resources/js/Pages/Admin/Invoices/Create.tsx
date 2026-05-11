@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { Booking, PageProps } from '@/types';
 import { useState, useEffect } from 'react';
+import CurrencyInput from '@/Components/CurrencyInput';
 
 interface Props extends PageProps {
     bookings: (Booking & { service: { id: number; name: string; base_price: number } })[];
@@ -193,11 +194,9 @@ export default function AdminInvoicesCreate({ bookings }: Props) {
                                         </div>
                                         <div className="col-span-4">
                                             {idx === 0 && <label className="text-xs text-gray-500 mb-1 block">Harga Satuan (Rp)</label>}
-                                            <input
-                                                type="number"
+                                            <CurrencyInput
                                                 value={item.unit_price}
-                                                min={0}
-                                                onChange={(e) => updateItem(idx, 'unit_price', parseFloat(e.target.value) || 0)}
+                                                onChange={(v) => updateItem(idx, 'unit_price', v)}
                                                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             />
                                         </div>
@@ -220,21 +219,17 @@ export default function AdminInvoicesCreate({ bookings }: Props) {
                                 </div>
                                 <div className="flex items-center justify-between gap-4">
                                     <label className="text-gray-500 whitespace-nowrap">Diskon (Rp)</label>
-                                    <input
-                                        type="number"
-                                        value={data.discount_amount}
-                                        min={0}
-                                        onChange={(e) => setData('discount_amount', e.target.value)}
+                                    <CurrencyInput
+                                        value={parseFloat(data.discount_amount || '0')}
+                                        onChange={(v) => setData('discount_amount', String(v))}
                                         className="w-36 rounded-md border border-gray-300 px-3 py-1.5 text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
                                 <div className="flex items-center justify-between gap-4">
                                     <label className="text-gray-500 whitespace-nowrap">Pajak (Rp)</label>
-                                    <input
-                                        type="number"
-                                        value={data.tax_amount}
-                                        min={0}
-                                        onChange={(e) => setData('tax_amount', e.target.value)}
+                                    <CurrencyInput
+                                        value={parseFloat(data.tax_amount || '0')}
+                                        onChange={(v) => setData('tax_amount', String(v))}
                                         className="w-36 rounded-md border border-gray-300 px-3 py-1.5 text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
